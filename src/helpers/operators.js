@@ -1,3 +1,5 @@
+import { Operator } from './operator-kit';
+
 const reduce = Operator((data, workerInterface) => {
   const promise = data.reduce((acc, val) => acc.then(result =>
     workerInterface.queue([result, val])), Promise.resolve(1),
