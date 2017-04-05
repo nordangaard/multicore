@@ -1,0 +1,41 @@
+{
+  "name": "multicore",
+  "version": "0.0.1",
+  "description": "A simple Javascript library for handling Workers.",
+  "main": "./lib/multicore.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nordangaard/multicore.git"
+  },
+  "keywords": [
+    "worker",
+    "html5",
+    "web",
+    "worker",
+    "web",
+    "workers",
+    "multithread",
+    "thread",
+    "paralleljs",
+    "parallel"
+  ],
+  "author": "Markus Nordangård <nordangaard@gmail.com>",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/nordangaard/multicore/issues"
+  },
+  "homepage": "https://github.com/nordangaard/multicore#readme",
+  "dependencies": {
+    "ramda": "^0.23.0",
+    "ramda-fantasy": "^0.7.0"
+  },
+  "devDependencies": {
+    "babel-core": "^6.24.0",
+    "babel-loader": "^6.4.1",
+    "babel-preset-env": "^1.3.2",
+    "webpack": "^2.3.3"
+  }
+}
