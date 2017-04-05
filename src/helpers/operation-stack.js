@@ -1,3 +1,5 @@
+import R from 'ramda';
+
 const createObjectUrl = R.memoize((src) => {
   const blob = new Blob([src], { type: 'text/javascript' });
   const url = URL.createObjectURL(blob);
