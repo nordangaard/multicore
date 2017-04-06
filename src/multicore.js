@@ -12,20 +12,20 @@ class Multicore extends FakedPromise {
     this.running = false;
   }
 
-  map(fn) {
-    return this.addAction(map(fn, {}));
+  map(fn, ...args) {
+    return this.addAction(map(fn, args));
   }
 
-  reduce(fn) {
-    return this.addAction(reduce(fn, {}));
+  reduce(fn, ...args) {
+    return this.addAction(reduce(fn, args));
   }
 
-  filter(fn) {
-    return this.addAction(filter(fn, {}));
+  filter(fn, ...args) {
+    return this.addAction(filter(fn, args));
   }
 
-  spawn(fn) {
-    return this.addAction(spawn(fn, {}));
+  spawn(fn, ...args) {
+    return this.addAction(spawn(fn, args));
   }
 
   addAction(fn) {
