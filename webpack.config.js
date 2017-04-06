@@ -11,6 +11,8 @@ module.exports = {
   output: {
     path: fixPath('./lib'),
     filename: 'multicore.js',
+    library: 'Multicore',
+    libraryTarget: 'umd',
   },
   module: {
     loaders: [
@@ -18,7 +20,11 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         query: {
+          presets: ["es2015"],
           cacheDirectory: true,
+          "plugins": [
+            ["transform-es2015-modules-commonjs", { "loose": true }],
+          ],
         },
       },
     ],

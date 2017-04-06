@@ -11,11 +11,7 @@ const reduce = Operator((data, workerInterface) => {
 const map = Operator((data, workerInterface) => {
   const promises = data.map(val => workerInterface.queue(val));
 
-  return new Promise((resolve, reject) => {
-    Promise.all(promises)
-      .then(resolve)
-      .catch(reject);
-  });
+  return Promise.all(promises);
 });
 
 const filter = Operator((data, workerInterface) => {
