@@ -1,23 +1,28 @@
 import { Operator } from './operator-kit';
 
 const reduce = Operator((data, workerInterface, fn, args) => {
+
+  const wrappedFunc = (arr) => {
+    return fn(arr[0], arr[1]);
+  };
+
   const promise = data.reduce((acc, val) => acc.then(result =>
-    workerInterface.queue(fn, [result, val])), Promise.resolve(1),
+    workerInterface.queue([result, val], wrappedFunc)), Promise.resolve(1),
   );
 
   return promise;
 });
 
-const map = Operator((data, workerInterface, fn) => {
-  const promises = data.map(val => workerInterface.queue(fn, val));
+const map = Operator((data, workerInterface) => {
+  const promises = data.map(val => workerInterface.queue(val));
 
   return Promise.all(promises);
 });
 
-const filter = Operator((data, workerInterface, fn) => {
+const filter = Operator((data, workerInterface) => {
   const arr = [];
   const promises = data.map(val => {
-    workerInterface.queue(fn, val).then(bool => {
+    workerInterface.queue(val).then(bool => {
       if (bool) { arr.push(val) } 
     });
   });
@@ -25,7 +30,7 @@ const filter = Operator((data, workerInterface, fn) => {
   return Promise.all(promises).then(result => arr);
 });
 
-const spawn = Operator((data, workerInterface, fn) => workerInterface.queue(fn, data));
+const spawn = Operator((data, workerInterface) => workerInterface.queue(data));
 
 export {
   reduce,

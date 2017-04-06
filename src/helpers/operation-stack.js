@@ -37,6 +37,11 @@ class OperationStack {
     this.next();
   }
 
+  batch(operation){
+    this.stack.push(operation);
+    this.next();
+  }
+
   next() {
     if (this.hasFreeWorkers && !this.stackEmpty) {
       this.process(this.stack.pop());
