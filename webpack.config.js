@@ -9,7 +9,7 @@ const fixPath = function(pathString) {
 module.exports = {
   entry: fixPath('./src/multicore.js'),
   output: {
-    path: fixPath('./lib'),
+    path: fixPath('./dist'),
     filename: 'multicore.js',
     library: 'Multicore',
     libraryTarget: 'umd',

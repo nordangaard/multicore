@@ -3,7 +3,7 @@ import {
   EventStartProcessing,
   EventDoneProcessing,
   EventDataSuccess,
-} from './event-manager';
+} from '../helpers/event-manager';
 
 const createObjectUrl = (src) => {
   const blob = new Blob([src], { type: 'text/javascript' });

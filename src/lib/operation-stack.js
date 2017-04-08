@@ -1,11 +1,11 @@
 import R from 'ramda';
-import ThreadManager from './thread-manager';
+import { ThreadManager } from './threading';
 
 import {
   EventDataSuccess,
   EventDataError,
   EventFreeThread,
-} from './event-manager';
+} from './helpers/event-manager';
 
 class OperationStack {
   constructor() {

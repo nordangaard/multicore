@@ -1,6 +1,6 @@
 import R from 'ramda';
 import OperationStack from './operation-stack';
-import compileSrc from './compiler';
+import { compileSrc } from './helpers';
 
 const EnvNamespace = 'env';
 const __ = R.curry;

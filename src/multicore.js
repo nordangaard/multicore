@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { FakedPromise, map, reduce, foldr, filter, spawn } from './helpers';
+import { FakedPromise, map, reduce, foldr, filter, spawn } from './lib';
 
 const Worker = window.Worker;
 

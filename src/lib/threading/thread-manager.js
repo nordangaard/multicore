@@ -6,7 +6,7 @@ import {
   EventDataError,
   EventDataSuccess,
   EventFreeThread,
-} from './event-manager';
+} from '../helpers/event-manager';
 
 class ThreadManager extends EventManager {
   constructor({ maxThreads = (window.navigator.hardwareConcurrency || 4) } = {}) {
