@@ -108,7 +108,7 @@ data.filter((val) => {
 // 3
 ```
 
-More methods under development.
+*More methods under development.*
 
 ## License
 
