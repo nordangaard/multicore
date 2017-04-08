@@ -73,7 +73,7 @@ data.map(val => val*2);
 ```
 
 ### .reduce
-Applies a function against an accumulator and each element in the array (from left to right) to reduce it to a single value. Usage: 
+Applies a function against an accumulator and each element in the array in parallel to reduce it to a single value. *Important*: This function is optimized to run in parallel and needs your reduction operators to be associative, if your operators are not [associative](http://www.computerhope.com/jargon/a/assooper.htm) then use foldr() instead. Usage: 
 
 ```
 const data = new Multicore([1,2,3]);

@@ -7,7 +7,7 @@ const __ = R.curry;
 const Stack = new OperationStack();
 
 // makeJob : String Src -> Data -> Operation
-const makeOp = __((id, src, data) => ({ src, id, data }));
+const makeOp = __((id, src, data) => ({ id, src, data }));
 
 // queueOperation : Operation -> Promise
 const doOperation = __((stackFunc, operation) => {
