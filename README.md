@@ -31,19 +31,19 @@ Create new instance for data you wish you manipulate:
 const data = new Multicore([1,2,3]);
 ```
 
-
 Manipulate:
 
 ```
 data.map(val => val*2)
   .map(val => val*3)
-  .reduce((arr) => {
-    const [acc, val] = arr;
+  .reduce((acc, val) => {
     return acc + val;
   })
   .then(result => {
     console.log(`The result is ${result}`);
   });
+
+// The result is 37
   
 ```
 
@@ -58,6 +58,7 @@ const data = new Multicore(['a','b','c']);
 data.spawn(data => {
     return data.join(',').toUpperCase();
 });
+// A,B,C
 ```
 
 ### .map
@@ -66,17 +67,29 @@ Map over elements of array applying given function to every element. Usage:
 ```
 const data = new Multicore([1,2,3]);
 data.map(val => val*2);
+// [2,4,6]
 ```
 
 ### .reduce
-Applies a function against an accumulator and each element in the array (from left to right) to reduce it to a single value. **Important**: Currently receives an array of size 2 for accumulator and value. Usage: 
+Applies a function against an accumulator and each element in the array (from left to right) to reduce it to a single value. Usage: 
 
 ```
 const data = new Multicore([1,2,3]);
-data.reduce((arr) => {
-    const [acc, val] = arr;
+data.reduce((acc, val) => {
     return acc + val;
   });
+// 6
+```
+
+### .filter
+The filter method filters the data and keeps only elements that pass the test implemented by the provided function. Usage: 
+
+```
+const data = new Multicore([1,2,3]);
+data.filter((val) => {
+    return val > 2;
+  });
+// 3
 ```
 
 More methods under development.
