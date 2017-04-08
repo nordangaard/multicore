@@ -50,7 +50,7 @@ data.map(val => val*2)
 ## Methods
 A method receives only one argument, the current data being manipulated.
 
-### .spawn
+### .spawn(fn)
 Apply given function to current data. Usage:
 
 ```
@@ -62,8 +62,8 @@ data.spawn(data => {
 // A,B,C
 ```
 
-### .map
-Map over elements of array applying given function to every element. Usage:
+### .map(fn)
+Map over elements of array applying given function to every element. Similar to Javascript [Array.map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) Usage:
 
 ```
 const data = new Multicore([1,2,3]);
@@ -72,8 +72,8 @@ data.map(val => val*2);
 // [2,4,6]
 ```
 
-### .reduce
-Applies a function against an accumulator and each element in the array in parallel to reduce it to a single value. *Important*: This function is optimized to run in parallel and needs your reduction operators to be associative, if your operators are not [associative](http://www.computerhope.com/jargon/a/assooper.htm) then use foldr() instead. Usage: 
+### .foldr(fn, [accumulator])
+Applies a function against an accumulator and each element in the array in from left-to-right to reduce it to a single value. Similar to Javascript [Array.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce). Usage: 
 
 ```
 const data = new Multicore([1,2,3]);
@@ -84,8 +84,20 @@ data.reduce((acc, val) => {
 // 6
 ```
 
-### .filter
-The filter method filters the data and keeps only elements that pass the test implemented by the provided function. Usage: 
+### .reduce(fn, [accumulator])
+Applies a function against an accumulator and each element in the array in parallel to reduce it to a single value. **Important**: This function is optimized to run in parallel and needs your reduction operators to be associative, if your operators are not [associative](http://www.computerhope.com/jargon/a/assooper.htm) then use foldr() instead. Usage: 
+
+```
+const data = new Multicore([1,2,3]);
+data.reduce((acc, val) => {
+    return acc + val;
+  });
+
+// 6
+```
+
+### .filter(fn)
+The filter method filters the data and keeps only elements that pass the test implemented by the provided function. Similar to Javascript [Array.filter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) Usage: 
 
 ```
 const data = new Multicore([1,2,3]);
