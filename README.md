@@ -58,6 +58,7 @@ const data = new Multicore(['a','b','c']);
 data.spawn(data => {
     return data.join(',').toUpperCase();
 });
+
 // A,B,C
 ```
 
@@ -67,6 +68,7 @@ Map over elements of array applying given function to every element. Usage:
 ```
 const data = new Multicore([1,2,3]);
 data.map(val => val*2);
+
 // [2,4,6]
 ```
 
@@ -78,6 +80,7 @@ const data = new Multicore([1,2,3]);
 data.reduce((acc, val) => {
     return acc + val;
   });
+
 // 6
 ```
 
@@ -89,6 +92,7 @@ const data = new Multicore([1,2,3]);
 data.filter((val) => {
     return val > 2;
   });
+
 // 3
 ```
 
