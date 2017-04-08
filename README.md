@@ -77,11 +77,11 @@ Applies a function against an accumulator and each element in the array in from 
 
 ```
 const data = new Multicore([1,2,3]);
-data.reduce((acc, val) => {
-    return acc + val;
-  });
+data.foldr((acc, val) => {
+    return acc - val;
+  }, 0);
 
-// 6
+// -4
 ```
 
 ### .reduce(fn, [accumulator = 0])
