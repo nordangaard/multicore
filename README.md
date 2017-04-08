@@ -72,7 +72,7 @@ data.map(val => val*2);
 // [2,4,6]
 ```
 
-### .foldr(fn, [accumulator])
+### .foldr(fn, [accumulator = 0])
 Applies a function against an accumulator and each element in the array in from left-to-right to reduce it to a single value. Similar to Javascript [Array.reduce](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce). Usage: 
 
 ```
@@ -84,8 +84,8 @@ data.reduce((acc, val) => {
 // 6
 ```
 
-### .reduce(fn, [accumulator])
-Applies a function against an accumulator and each element in the array in parallel to reduce it to a single value. **Important**: This function is optimized to run in parallel and needs your reduction operators to be associative, if your operators are not [associative](http://www.computerhope.com/jargon/a/assooper.htm) then use foldr() instead. Usage: 
+### .reduce(fn, [accumulator = 0])
+Applies a function against an accumulator and each element in the array in parallel to reduce it to a single value. **Important**: This function is optimized to run in parallel and needs your reduction operators to be associative, if your operators are not [associative](http://www.computerhope.com/jargon/a/assooper.htm) then use [foldr()](#foldrfn-accumulator) instead. Usage: 
 
 ```
 const data = new Multicore([1,2,3]);
