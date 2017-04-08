@@ -7,7 +7,7 @@ const __ = R.curry;
 const Stack = new OperationStack();
 
 // makeJob : String Src -> Data -> Operation
-const makeOp = __((src, data) => ({ src, data }));
+const makeOp = __((id, src, data) => ({ src, id, data }));
 
 // queueOperation : Operation -> Promise
 const doOperation = __((stackFunc, operation) => {
@@ -27,6 +27,7 @@ class WorkerInterface {
     this.original = fn;
     this.fn = (data) => { return fn(data); };
     this.compile = compileSrc(this.original, EnvNamespace);
+    this.id = performance.now();
   }
 
   get global() {
@@ -42,7 +43,7 @@ class WorkerInterface {
   }
 
   get operation() {
-    return this._operation = this._operation || makeOp(this.src);
+    return this._operation = this._operation || makeOp(this.id, this.src);
   }
 
   recompile(fn, global) {
@@ -50,6 +51,7 @@ class WorkerInterface {
 
     this.fn = fn || this.fn;
     this.global = global || this.global;
+    this.id = performance.now();
 
     return this._src = this.compile(this.global, this.fn);
   }
