@@ -1,50 +1,75 @@
 import R from 'ramda';
 import OperationStack from './operation-stack';
+import compileSrc from './compiler';
 
 const EnvNamespace = 'env';
 const __ = R.curry;
 const Stack = new OperationStack();
 
-// For future compiling of helper functions
-const compileHelper = ([fn, name]) => name ? ` var ${name} = ${fn.toString()}; ` : ` ${fn.toString()} `;
-const compileHelpers = R.pipe( R.toPairs, R.map(compileHelper), R.join(' ') );
-
-// makeSrc : Function -> Data -> String (Src)
-const compileSrc = __((globalData, fn) =>{ 
-  return `
-  self.onmessage = function(e) {
-    var global = {}; global.${EnvNamespace} = ${JSON.stringify(globalData || {})};
-    self.postMessage((${fn.toString()})(e.data))
-  }`;
-});
-
 // makeJob : String Src -> Data -> Operation
-const makeOp = __((src, data) => ({ src, data }));
+const makeOp = __((id, src, data) => ({ src, id, data }));
 
 // queueOperation : Operation -> Promise
-const queueOperation = __((stack, operation) => {
+const doOperation = __((stackFunc, operation) => {
   const promise = new Promise((resolve, reject) => {
     operation.promise = [resolve, reject];
-    stack.queue(operation);
+    stackFunc(operation);
   });
 
   return promise;
 });
 
-const queueOperationWithStack = queueOperation(Stack);
+const queueOperation = doOperation(Stack.queue.bind(Stack));
+const batchOperation = doOperation(Stack.batch.bind(Stack));
 
-const workerInterface = () => ({
-  global: {},
-  namespace: {},
-  batch: () => {},
-  queue: __(function(fn, data) {
-    const operation = R.pipe(compileSrc(this.global), makeOp)(fn);
-    return R.pipe(operation, queueOperationWithStack)(data);
-  }),
-});
+class WorkerInterface {
+  constructor(fn) {
+    this.original = fn;
+    this.fn = (data) => { return fn(data); };
+    this.compile = compileSrc(this.original, EnvNamespace);
+    this.id = performance.now();
+  }
+
+  get global() {
+    return this._global || {};
+  }
+
+  set global(val) {
+    return this._global = val;
+  }
+
+  get src() {
+    return this._src = this._src || this.compile(this.global, this.fn);
+  }
+
+  get operation() {
+    return this._operation = this._operation || makeOp(this.id, this.src);
+  }
+
+  recompile(fn, global) {
+    if(!fn && !global) return;
+
+    this.fn = fn || this.fn;
+    this.global = global || this.global;
+    this.id = performance.now();
+
+    return this._src = this.compile(this.global, this.fn);
+  }
+
+  queue(data, fn) {
+    this.recompile(fn);
+    return R.pipe(this.operation, queueOperation)(data);
+  }
+
+  batch(data, fn) {
+    this.recompile(fn);
+    return R.pipe(this.operation, batchOperation)(data);
+  }
+}
 
 const Operator = operatorFunc => __((fn, args, data) => {
-  return operatorFunc(data, workerInterface(), fn, args);
+  const workerInterface = new WorkerInterface(fn);
+  return operatorFunc(data, workerInterface, fn, args);
 });
 
 export {

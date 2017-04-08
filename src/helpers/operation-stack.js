@@ -1,70 +1,48 @@
 import R from 'ramda';
+import ThreadManager from './thread-manager';
 
-const createObjectUrl = R.memoize((src) => {
-  const blob = new Blob([src], { type: 'text/javascript' });
-  const url = URL.createObjectURL(blob);
-  return url;
-});
+import {
+  EventDataSuccess,
+  EventDataError,
+  EventFreeThread,
+} from './event-manager';
 
 class OperationStack {
-  constructor({ maxWorkers = (window.navigator.hardwareConcurrency || 4) } = {}) {
-    this.maxWorkers = maxWorkers;
-    this.activeWorkers = 0;
+  constructor() {
+    this.threadManager = new ThreadManager();
     this.stack = [];
+
+    this.threadManager.on(EventDataSuccess, (operation, data) => {
+      const [resolve] = operation.promise;
+      resolve(data);
+    });
+
+    this.threadManager.on(EventDataError, (operation, e ) => {
+      const [_, reject] = operation.promise;
+      reject(e);
+    });
+
+    this.threadManager.on(EventFreeThread, (thread) => {
+      if (this.stack.length > 0) {
+        thread.process(this.stack.shift());
+      }
+    });
   }
 
-  get hasFreeWorkers() {
-    return this.activeWorkers !== this.maxWorkers;
-  }
+  addOperation(operation) {
+    this.stack.push(operation);
 
-  get stackEmpty() {
-    return this.stack.length === 0;
-  }
-
-  spawnWorker(src) {
-    const url = createObjectUrl(src);
-    const worker = new Worker(url);
-
-    return this.activeWorkers++, worker;
-  }
-
-  destroyWorker(worker) {
-    return worker.terminate(), this.activeWorkers--, this;
+    if (this.stack.length > 0) {
+      this.threadManager.requestThread();
+    }
   }
 
   queue(operation) {
-    this.stack.push(operation);
-    this.next();
+    this.addOperation(operation);
   }
 
-  next() {
-    if (this.hasFreeWorkers && !this.stackEmpty) {
-      this.process(this.stack.pop());
-    }
+  batch() { }
 
-    return this;
-  }
-
-  process({ src, data, promise }) {
-    const worker = this.spawnWorker(src);
-    const [resolve, reject] = promise;
-
-    worker.onmessage = ({ data }) => {
-      this.destroyWorker(worker);
-      this.next();
-
-      resolve(data);
-    };
-
-    worker.onerror = (e) => {
-      this.destroyWorker(worker);
-      this.next();
-
-      reject(e);
-    };
-
-    worker.postMessage(data);
-  }
 }
 
 export default OperationStack;
