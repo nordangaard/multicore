@@ -1,9 +1,4 @@
-import { 
-  EventManager,
-  EventStartProcessing,
-  EventDoneProcessing,
-  EventDataSuccess,
-} from './event-manager';
+import EventManager from '../helpers/event-manager';
 
 const createObjectUrl = (src) => {
   const blob = new Blob([src], { type: 'text/javascript' });
@@ -25,12 +20,12 @@ class Thread extends EventManager {
 
   startProcessing() {
     this.setActive(true);
-    this.trigger(EventStartProcessing);
+    this.triggerStartProcessing();
   }
 
   doneProcessing() {
     this.setActive(false);
-    this.trigger(EventDoneProcessing, this);
+    this.triggerDoneProcessing(this);
   }
 
   process(operation, bool) {
@@ -44,12 +39,12 @@ class Thread extends EventManager {
     }
 
     worker.onmessage = ({ data }) => {
-      this.trigger(EventDataSuccess, operation, data);
+      this.triggerData(operation, data);
       this.doneProcessing();
     };
 
     worker.onerror = (e) => {
-      this.trigger(EventDataSuccess, operation, e);
+      this.triggerDataError(operation, e);
       this.doneProcessing();
     };
 

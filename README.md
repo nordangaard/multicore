@@ -59,7 +59,7 @@ data.spawn(data => {
     return data.join(',').toUpperCase();
 });
 
-// A,B,C
+// "A,B,C"
 ```
 
 ### .map(fn)

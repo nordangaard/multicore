@@ -2,7 +2,7 @@
   "name": "multicore",
   "version": "0.0.9",
   "description": "A simple Javascript library for handling Workers.",
-  "main": "lib/multicore.js",
+  "main": "dist/multicore.js",
   "scripts": {
     "prepublish": "webpack",
     "build": "webpack"
