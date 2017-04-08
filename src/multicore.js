@@ -40,7 +40,7 @@ class Multicore extends FakedPromise {
   next() {
     if (!this.running && this.actions.length === 0) {
       return this.resolve(this.data), this.resolved = true, this;
-  }
+    }
 
     if (!this.running && this.actions.length > 0) {
       this.makeJob(this.actions.shift());

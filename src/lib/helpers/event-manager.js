@@ -21,13 +21,17 @@ class EventManager {
     return this.subscribers[eventType] && this.subscribers[eventType](...args);
   }
 
+  onStartProcessing(fn) { return this.on(EventStartProcessing, fn); }
+  onDoneProcessing(fn) { return this.on(EventDoneProcessing, fn); }
+  onData(fn) { return this.on(EventDataSuccess, fn); }
+  onDataError(fn) { return this.on(EventDataError, fn); }
+  onFreeThread(fn) { return this.on(EventFreeThread, fn); }
+
+  triggerStartProcessing(...args) { return this.trigger(EventStartProcessing, ...args); }
+  triggerDoneProcessing(...args) { return this.trigger(EventDoneProcessing, ...args); }
+  triggerData(...args) { return this.trigger(EventDataSuccess, ...args); }
+  triggerDataError(...args) { return this.trigger(EventDataError, ...args); }
+  triggerFreeThread(...args) { return this.trigger(EventFreeThread, ...args); }
 }
 
-export {
-  EventManager,
-  EventStartProcessing,
-  EventDoneProcessing,
-  EventDataError,
-  EventDataSuccess,
-  EventFreeThread,
-};
+export default EventManager;

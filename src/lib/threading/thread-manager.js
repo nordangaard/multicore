@@ -1,12 +1,5 @@
 import Thread from './thread';
-import { 
-  EventManager,
-  EventStartProcessing,
-  EventDoneProcessing,
-  EventDataError,
-  EventDataSuccess,
-  EventFreeThread,
-} from '../helpers/event-manager';
+import EventManager from '../helpers/event-manager';
 
 class ThreadManager extends EventManager {
   constructor({ maxThreads = (window.navigator.hardwareConcurrency || 4) } = {}) {
@@ -17,19 +10,19 @@ class ThreadManager extends EventManager {
 
     // Register events
     this.threads.forEach(thread => {
-        thread.on(EventStartProcessing, () => this.activeThreads++);
+        thread.onStartProcessing(() => this.activeThreads++);
 
-        thread.on(EventDoneProcessing, (thread) => {
+        thread.onDoneProcessing((thread) => {
           this.activeThreads--;
-          this.trigger(EventFreeThread, thread);
+          this.triggerFreeThread(thread);
         });
 
-        thread.on(EventDataSuccess, (...args) => {
-          this.trigger(EventDataSuccess, ...args);
+        thread.onData((...args) => {
+          this.triggerData(...args);
         });
 
-        thread.on(EventDataError, (...args) => {
-          this.trigger(EventDataError, ...args);
+        thread.onDataError((...args) => {
+          this.triggerDataError(...args);
         });
       });
   }
@@ -37,7 +30,7 @@ class ThreadManager extends EventManager {
   requestThread() {
     if (this.hasFreeThreads) {
       const thread = this.threads.filter(thread => !thread.active).pop();
-      this.trigger(EventFreeThread, thread);
+      this.triggerFreeThread(thread);
     }
   }
 
