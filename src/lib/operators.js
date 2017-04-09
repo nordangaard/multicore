@@ -64,7 +64,9 @@ const foldr = Operator((data, workerInterface, fn, [init] = []) => {
 const map = Operator((data, workerInterface, fn) => {
   const wrappedFunc = (data) => {
     for (const key in data) {
-      data[key] = fn(data[key]);
+      if ( data.hasOwnProperty(key) ) {
+        data[key] = fn(data[key], key);
+      }
     }
     return data;
   };
