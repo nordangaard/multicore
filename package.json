@@ -1,6 +1,6 @@
 {
   "name": "multicore",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "A simple Javascript library for handling Workers.",
   "main": "dist/multicore.js",
   "scripts": {
