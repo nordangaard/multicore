@@ -1,36 +1,53 @@
 import R from 'ramda';
 import { Operator } from './operator-kit';
 
-const reducePairs = (fn, data, resolve, reject, workerInterface) => {
-  const splitArr = R.splitEvery(2, data);
-
-  const promiseArr = splitArr.map((arr) => {
-    if (arr.length === 1) {
-      return Promise.resolve(arr[0]);
-    }
-
-    return workerInterface.queue(arr, fn);
-  });
-
-  Promise.all(promiseArr).then((arr) => {
-    if (arr.length === 1) {
-      resolve(arr[0]);
-    } else {
-      reducePairs(fn, arr, resolve, reject, workerInterface);
-    }
-  });
-};
-
 const reduce = Operator((data, workerInterface, fn, [init] = []) => {
-  const wrappedFunc = arr => fn(arr[0], arr[1]);
-
   if (init) {
     data.unshift(init);
   }
 
-  return new Promise((resolve, reject) => {
-    reducePairs(wrappedFunc, data, resolve, reject, workerInterface);
-  });
+  const wrappedFunc = (arr) => {
+    function splitEvery(n, list) {
+      if (n <= 0) {
+        throw new Error('First argument to splitEvery must be a positive integer');
+      }
+
+      const result = [];
+      let idx = 0;
+      while (idx < list.length) {
+        result.push(list.slice(idx, idx += n));
+      }
+      return result;
+    }
+
+    function reducePairs(dataArr) {
+      const splitArr = splitEvery(2, dataArr);
+
+      const result = [];
+
+      for (const arrVal of splitArr) {
+        if (arrVal.length === 1) {
+          result.push(arrVal[0]);
+        } else {
+          result.push(fn(arrVal[0], arrVal[1]));
+        }
+      }
+
+      if (result.length === 1) {
+        return result[0];
+      } 
+
+      return reducePairs(result);
+    }
+
+    return reducePairs(arr);
+  };
+
+  const promises = workerInterface
+    .splitJob(data)
+    .map(arr => workerInterface.queue(arr, wrappedFunc));
+
+  return Promise.all(promises).then(arr => workerInterface.queue(arr));
 });
 
 const foldr = Operator((data, workerInterface, fn, [init] = []) => {
@@ -43,10 +60,21 @@ const foldr = Operator((data, workerInterface, fn, [init] = []) => {
   return promise;
 });
 
-const map = Operator((data, workerInterface) => {
-  const promises = data.map(val => workerInterface.queue(val));
+const map = Operator((data, workerInterface, fn) => {
+  const wrappedFunc = (data) => {
+    const result = [];
+    for (const val of data) {
+      result.push(fn(val));
+    }
 
-  return Promise.all(promises);
+    return result;
+  };
+
+  const promises = workerInterface
+    .splitJob(data)
+    .map(val => workerInterface.queue(val, wrappedFunc));
+
+  return Promise.all(promises).then(arr => R.flatten(arr));
 });
 
 const filter = Operator((data, workerInterface) => {
