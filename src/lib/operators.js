@@ -1,4 +1,5 @@
 import R from 'ramda';
+import Promise from 'bluebird';
 import { Operator } from './operator-kit';
 
 const reduce = Operator((data, workerInterface, fn, [init] = []) => {

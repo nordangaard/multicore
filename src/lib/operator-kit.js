@@ -1,4 +1,5 @@
 import R from 'ramda';
+import Promise from 'bluebird';
 import OperationStack from './operation-stack';
 import { compileSrc } from './helpers';
 
