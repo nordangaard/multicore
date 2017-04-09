@@ -62,12 +62,10 @@ const foldr = Operator((data, workerInterface, fn, [init] = []) => {
 
 const map = Operator((data, workerInterface, fn) => {
   const wrappedFunc = (data) => {
-    const result = [];
-    for (const val of data) {
-      result.push(fn(val));
+    for (const key in data) {
+      data[key] = fn(data[key]);
     }
-
-    return result;
+    return data;
   };
 
   const promises = workerInterface
@@ -78,14 +76,21 @@ const map = Operator((data, workerInterface, fn) => {
 });
 
 const filter = Operator((data, workerInterface) => {
-  const arr = [];
-  const promises = data.map((val) => {
-    workerInterface.queue(val).then((bool) => {
-      if (bool) { arr.push(val); }
-    });
-  });
+  const wrappedFunc = (data) => {
+    const arr = [];
+    for (const key in data) {
+      if ( fn(data[key]) ) {
+        arr.push(data[key]);
+      }
+    }
+    return arr;
+  };
 
-  return Promise.all(promises).then(result => arr);
+  const promises = workerInterface
+    .splitJob(data)
+    .map(val => workerInterface.queue(val, wrappedFunc));
+
+  return Promise.all(promises).then(arr => R.flatten(arr));
 });
 
 const spawn = Operator((data, workerInterface) => workerInterface.queue(data));
