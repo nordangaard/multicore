@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { FakedPromise, map, reduce, foldr, filter, spawn } from './lib';
+import { FakedPromise, map, reduce, foldr, filter, spawn, parallel } from './lib';
 
 const Worker = window.Worker;
 
@@ -30,6 +30,10 @@ class Multicore extends FakedPromise {
 
   spawn(fn, ...args) {
     return this.addAction(spawn(fn, args));
+  }
+
+  parallel(...fns) {
+    return this.addAction(parallel(fns));
   }
 
   addAction(fn) {

@@ -1,5 +1,5 @@
 import R from 'ramda';
-import { Operator } from './operator-kit';
+import { Operator, MultiOperator } from './operator-kit';
 
 const reduce = Operator((data, workerInterface, fn, [init] = []) => {
   if (init) {
@@ -95,10 +95,17 @@ const filter = Operator((data, workerInterface) => {
 
 const spawn = Operator((data, workerInterface) => workerInterface.queue(data));
 
+const parallel = MultiOperator((data, workerInterfaces, fns) => {
+  const promises = workerInterfaces.map(int => int.queue(data));
+
+  return Promise.all(promises);
+});
+
 export {
   reduce,
   foldr,
   map,
   filter,
   spawn,
+  parallel,
 };

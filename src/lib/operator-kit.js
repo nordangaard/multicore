@@ -76,6 +76,12 @@ const Operator = operatorFunc => __((fn, args, data) => {
   return operatorFunc(data, workerInterface, fn, args);
 });
 
+const MultiOperator = operatorFunc => __((fns, data) => {
+  const workerInterfaces = fns.map(fn => new WorkerInterface(fn));
+  return operatorFunc(data, workerInterfaces, fns);
+});
+
 export {
-  Operator
+  Operator,
+  MultiOperator
 };
