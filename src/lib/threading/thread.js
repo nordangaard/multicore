@@ -49,6 +49,7 @@ class Thread extends EventManager {
     };
 
     worker.postMessage(operation.data);
+    operation.data = null;
   }
 
   spawnWorker(src) {
