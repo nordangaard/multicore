@@ -52,9 +52,10 @@ class Multicore extends FakedPromise {
   makeJob(action) {
     this.running = true;
 
-    action(this.data).then((data) => {
-      this.data = data;
-    })
+    action(this.data)
+      .then((data) => {
+        this.data = data;
+      })
       .catch((error) => {
         this.rejected = true;
         this.reject(error);
