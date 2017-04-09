@@ -75,7 +75,9 @@ const map = Operator((data, workerInterface, fn) => {
     .splitJob(data)
     .map(val => workerInterface.queue(val, wrappedFunc));
 
-  return Promise.all(promises).then(arr => R.flatten(arr));
+  return Promise.all(promises)
+    .then(arr => R.flatten(arr))
+    .then(arr => arr.length === 1 && !Array.isArray(arr[0]) ? arr[0] : arr);
 });
 
 const filter = Operator((data, workerInterface) => {
