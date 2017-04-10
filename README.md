@@ -21,7 +21,7 @@ This assumes that you’re using [npm](http://npmjs.com/) package manager with a
 Import Multicore using either:
 
 ```
-const multicore = require('multicore');
+const multicore = require('multicore').default;
 import Multicore from 'multicore';
 ```
 
