@@ -9,7 +9,9 @@
     "build": "npm run build:es && npm run build:umd && npm run build:umd:min",
     "build:umd": "cross-env BABEL_ENV=commonjs NODE_ENV=development webpack src/multicore.js dist/multicore.js",
     "build:umd:min": "cross-env BABEL_ENV=commonjs NODE_ENV=production webpack src/multicore.js dist/multicore.min.js",
-    "build:es": "cross-env babel src --out-dir dist/es"
+    "build:es": "cross-env babel src --out-dir dist/es",
+    "test": "cross-env BABEL_ENV=commonjs NODE_ENV=test mocha --compilers js:babel-register --recursive --require ./test/setup.js",
+    "test:watch": "npm run test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -65,7 +67,11 @@
     "babel-preset-env": "^1.3.2",
     "babel-preset-es2015": "^6.24.0",
     "babel-register": "^6.24.1",
+    "chai": "^3.5.0",
+    "chai-spies": "^0.7.1",
     "cross-env": "^4.0.0",
+    "jsdom": "^9.12.0",
+    "mocha": "^3.2.0",
     "webpack": "^2.3.3"
   }
 }
