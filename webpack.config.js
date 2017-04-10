@@ -1,32 +1,34 @@
 const path = require('path');
 const webpack = require('webpack');
-
-const fixPath = function(pathString) {
-  return path.resolve(path.normalize(pathString));
-};
+const env = process.env.NODE_ENV
 
 
-module.exports = {
-  entry: fixPath('./src/multicore.js'),
+var config = {
   output: {
-    path: fixPath('./dist'),
-    filename: 'multicore.js',
     library: 'Multicore',
     libraryTarget: 'umd',
   },
   module: {
     loaders: [
-      {
-        test: /\.js$/,
-        loader: 'babel-loader',
-        query: {
-          presets: ["es2015"],
-          cacheDirectory: true,
-          "plugins": [
-            ["transform-es2015-modules-commonjs", { "loose": true }],
-          ],
-        },
-      },
+      { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/},
     ],
   },
+  plugins: []
 };
+
+
+if (env === 'production') {
+  config.plugins.push(
+    new webpack.optimize.UglifyJsPlugin({
+      compressor: {
+        pure_getters: true,
+        unsafe: true,
+        unsafe_comps: true,
+        screw_ie8: true,
+        warnings: false
+      }
+    })
+  )
+}
+
+module.exports = config;
