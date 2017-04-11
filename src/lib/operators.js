@@ -8,40 +8,7 @@ const reduce = Operator((data, workerInterface, fn, [init] = []) => {
   }
 
   const wrappedFunc = (arr) => {
-    function splitEvery(n, list) {
-      if (n <= 0) {
-        throw new Error('First argument to splitEvery must be a positive integer');
-      }
-
-      const result = [];
-      let idx = 0;
-      while (idx < list.length) {
-        result.push(list.slice(idx, idx += n));
-      }
-      return result;
-    }
-
-    function reducePairs(dataArr) {
-      const splitArr = splitEvery(2, dataArr);
-
-      const result = [];
-
-      for (const arrVal of splitArr) {
-        if (arrVal.length === 1) {
-          result.push(arrVal[0]);
-        } else {
-          result.push(fn(arrVal[0], arrVal[1]));
-        }
-      }
-
-      if (result.length === 1) {
-        return result[0];
-      } 
-
-      return reducePairs(result);
-    }
-
-    return reducePairs(arr);
+    return arr.reduce(fn);
   };
 
   const promises = workerInterface
@@ -63,12 +30,7 @@ const foldr = Operator((data, workerInterface, fn, [init] = []) => {
 
 const map = Operator((data, workerInterface, fn) => {
   const wrappedFunc = (data) => {
-    for (const key in data) {
-      if ( data.hasOwnProperty(key) ) {
-        data[key] = fn(data[key], key);
-      }
-    }
-    return data;
+    return data.map(fn);
   };
 
   const promises = workerInterface

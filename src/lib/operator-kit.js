@@ -58,7 +58,10 @@ class WorkerInterface {
   }
 
   splitJob(data) {
-    const split = Array.isArray(data) ? R.splitEvery(Math.round(data.length / 4), data) : [data];
+    const isArray = Array.isArray(data);
+    if(isArray && data.length === 4) return data;
+    
+    const split = isArray ? R.splitEvery(Math.round(data.length / 4), data) : [data];
     return split;
   }
 
