@@ -5,6 +5,11 @@ A simple Javascript library for handling Web Workers.
 
 Currently being developed. Only works on the web.
 
+Progress so far: 
+- Faster for arithmetic operations than ParallelJS.
+Test: Operating on a list of 100k elements, multiplying and reducing them to one value. 
+Result: Multicore: 188ms - ParallelJS ~20s
+
 ## Installation
 
 ```
