@@ -112,4 +112,4 @@ data.filter((val) => {
 
 ## License
 
-BSD3
+MIT

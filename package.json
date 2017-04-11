@@ -24,7 +24,7 @@
     "parallel"
   ],
   "author": "Markus Nordangård <nordangaard@gmail.com>",
-  "license": "BSD-3-Clause",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/nordangaard/multicore/issues"
   },
