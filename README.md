@@ -115,6 +115,15 @@ data.filter((val) => {
 
 *More methods under development.*
 
+## Work In Progress
+Work that is currently underway and lives in feature-branches.
+
+- Adding full test-coverage.
+- Support for typed-arrays and transferables.
+- Support for threaded conversion to typed-arrays.
+- Switching to babel-implementation and building minified-js-files for CDN.
+- Adding support for new operators: .parallel and .merge.
+
 ## License
 
 MIT
