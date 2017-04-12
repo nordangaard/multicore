@@ -19,6 +19,8 @@ class OperationStack {
     this.threadManager.onFreeThread((thread) => {
       if (this.stack.length > 0) {
         thread.process(this.stack.shift());
+      } else {
+        thread.terminate();
       }
     });
   }

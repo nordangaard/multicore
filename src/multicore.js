@@ -1,5 +1,6 @@
 import R from 'ramda';
 import { FakedPromise, map, reduce, foldr, filter, spawn } from './lib';
+import DataStore from './lib/helpers/data-store';
 
 const Worker = window.Worker;
 
@@ -7,7 +8,7 @@ class Multicore extends FakedPromise {
   constructor(data) {
     super();
 
-    this.data = data;
+    this.dataStore = new DataStore(data);
     this.actions = [];
     this.running = false;
   }
@@ -39,7 +40,7 @@ class Multicore extends FakedPromise {
 
   next() {
     if (!this.running && this.actions.length === 0) {
-      return this.resolve(this.data), this.resolved = true, this;
+      return this.resolve(this.dataStore.data), this.resolved = true, this;
     }
 
     if (!this.running && this.actions.length > 0) {
@@ -52,9 +53,9 @@ class Multicore extends FakedPromise {
   makeJob(action) {
     this.running = true;
 
-    action(this.data)
-      .then((data) => {
-        this.data = data;
+    action(this.dataStore)
+      .then((dataStore) => {
+        this.dataStore = dataStore;
       })
       .catch((error) => {
         this.rejected = true;
