@@ -1,4 +1,3 @@
-import R from 'ramda';
 import { ThreadManager } from './threading';
 
 class OperationStack {

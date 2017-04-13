@@ -16,7 +16,10 @@ const onMessage = functionBody => `
 
 // postMessage : Function -> String
 const postMessage = fn => `
-self.postMessage((${fn.toString()})(e.data))
+var result = (${fn.toString()})(e.data);
+self.postMessage(result, 
+  ( typeof result === 'object' && 'buffer' in result ) ? [result.buffer] : undefined
+)
 `;
 // namespace : String -> * any -> String
 const namespace = (env, data) => `
