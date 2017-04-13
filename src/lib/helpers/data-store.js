@@ -6,7 +6,7 @@ class DataStore {
     this.piece(data);
   }
 
-  split(numSplits = 4) {
+  split(numSplits = (window.navigator.hardwareConcurrency || 4)) {
     if( !this.inPieces && this.getSingle().length < 80 ) numSplits = 1;  
     
     if( !this.inPieces ) {
