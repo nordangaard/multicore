@@ -8,7 +8,7 @@ const reduce = Operator((dataStore, workerInterface, fn, [init] = []) => {
   }
 
   const wrappedFunc = (arr) => {
-    return arr.reduce(fn);
+    return arr.reduce(fn, 0);
   };
 
   const promises = dataStore.split()
@@ -25,7 +25,7 @@ const reduce = Operator((dataStore, workerInterface, fn, [init] = []) => {
 const foldr = Operator((dataStore, workerInterface, fn, [init] = []) => {
   const wrappedFunc = arr => fn(arr[0], arr[1]);
 
-  const promise = dataStore.data.reduce((acc, val) => acc.then(result =>
+  const promise = dataStore.merge().next().reduce((acc, val) => acc.then(result =>
     workerInterface.queue([result, val], wrappedFunc)), Promise.resolve(init || 0),
   );
 
@@ -45,17 +45,12 @@ const map = Operator((dataStore, workerInterface, fn) => {
 });
 
 const filter = Operator((dataStore, workerInterface) => {
-  const wrappedFunc = (data) => {
-    const arr = [];
-    for (const key in data) {
-      if ( fn(data[key]) ) {
-        arr.push(data[key]);
-      }
-    }
-    return arr;
+  const wrappedFunc = (arr) => {
+    return arr.filter(fn);
   };
 
-  const promises = workerInterface.split().map(store => workerInterface.queue(store.next(), wrappedFunc));
+  const promises = dataStore.split()
+    .map(store => workerInterface.queue(store.next(), wrappedFunc));
 
   return Promise.all(promises)
     .then( arr => arr.map(result => dataStore.piece(result)).pop() );

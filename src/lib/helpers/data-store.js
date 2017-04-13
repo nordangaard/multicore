@@ -16,6 +16,11 @@ class DataStore {
     return Array.apply(null, {length: numSplits}).map(() => this);
   }
 
+  merge() {
+    this._data = [ this.data ];
+    return this;
+  }
+
   piece(data) {
     this._data.push(data);
     return this;
