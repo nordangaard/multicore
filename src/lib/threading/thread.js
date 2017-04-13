@@ -48,8 +48,9 @@ class Thread extends EventManager {
       this.doneProcessing();
     };
 
-    worker.postMessage(operation.data);
-    operation.data = null;
+    worker.postMessage(operation.data, 
+      (typeof operation.data === 'object' && 'buffer' in operation.data) ? [operation.data.buffer] : undefined
+    );
   }
 
   spawnWorker(src) {
@@ -61,6 +62,12 @@ class Thread extends EventManager {
     const worker = new Worker(url);
 
     return this.currentWorker = worker;
+  }
+
+  terminate() {
+    if (this.currentWorker) {
+      this.currentWorker.terminate();
+    }
   }
 }
 

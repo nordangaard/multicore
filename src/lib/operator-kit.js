@@ -56,15 +56,7 @@ class WorkerInterface {
 
     return this._src = this.compile(this.global, this.fn);
   }
-
-  splitJob(data) {
-    const isArray = Array.isArray(data);
-    if(isArray && data.length === 4) return data;
-    
-    const split = isArray ? R.splitEvery(Math.round(data.length / 4), data) : [data];
-    return split;
-  }
-
+  
   queue(data, fn) {
     this.recompile(fn);
     return R.pipe(this.operation, queueOperation)(data);
