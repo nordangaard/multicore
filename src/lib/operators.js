@@ -12,11 +12,13 @@ const reduce = Operator((dataStore, workerInterface, fn, [init] = []) => {
   };
 
   const promises = dataStore.split()
-    .map(store => workerInterface.queue(store.next(), wrappedFunc));
+    .map(store => workerInterface
+      .queue(store.next(), wrappedFunc)
+    );
 
   return Promise.all(promises)
-    .then(arr => workerInterface.queue(arr))
-    .then(result => dataStore.piece(result));
+    .then( arr => { return workerInterface.queue(arr, wrappedFunc); } )
+    .then( result => dataStore.piece(result) );
 });
 
 // Remind: Fix this
@@ -53,12 +55,22 @@ const filter = Operator((dataStore, workerInterface) => {
     return arr;
   };
 
-  const promises = workerInterface.split().map(store => workerInterface.queue(store, wrappedFunc));
+  const promises = workerInterface.split().map(store => workerInterface.queue(store.next(), wrappedFunc));
 
-  return Promise.all(promises).then(arr => R.flatten(arr));
+  return Promise.all(promises)
+    .then( arr => arr.map(result => dataStore.piece(result)).pop() );
 });
 
-const spawn = Operator((dataStore, workerInterface) => workerInterface.queue(dataStore));
+const spawn = Operator((dataStore, workerInterface) => workerInterface.queue(dataStore.next())
+  .then(result => dataStore.piece(result)));
+
+const spawnParallel = Operator((dataStore, workerInterface) => {
+  const promises = dataStore.split()
+    .map(store => workerInterface.queue(store.next()));
+
+  return Promise.all(promises)
+    .then( arr => arr.map(result => dataStore.piece(result)).pop() );
+});
 
 export {
   reduce,
@@ -66,4 +78,5 @@ export {
   map,
   filter,
   spawn,
+  spawnParallel,
 };

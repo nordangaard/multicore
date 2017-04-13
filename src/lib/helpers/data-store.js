@@ -1,13 +1,14 @@
 import R from 'ramda';
 
 class DataStore {
-  constructor(data, type = null) {
-    this.type = type;
+  constructor(data) {
     this._data = [];
     this.piece(data);
   }
 
   split(numSplits = 4) {
+    if( !this.inPieces && this.getSingle().length < 80 ) numSplits = 1;  
+    
     if( !this.inPieces ) {
       this._data = R.splitEvery(Math.round(this.getSingle().length / numSplits), this.getSingle())
     }

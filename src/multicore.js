@@ -1,5 +1,4 @@
-import R from 'ramda';
-import { FakedPromise, map, reduce, foldr, filter, spawn } from './lib';
+import { FakedPromise, map, reduce, foldr, filter, spawn, spawnParallel } from './lib';
 import DataStore from './lib/helpers/data-store';
 
 const Worker = window.Worker;
@@ -33,13 +32,17 @@ class Multicore extends FakedPromise {
     return this.addAction(spawn(fn, args));
   }
 
+  spawnParallel(fn, ...args) {
+    return this.addAction(spawnParallel(fn, args));
+  }
+
   addAction(fn) {
     this.actions.push(fn);
     return this.next();
   }
 
   next() {
-    if (!this.running && this.actions.length === 0) {
+    if (this.done) {
       return this.resolve(this.dataStore.data), this.resolved = true, this;
     }
 
@@ -69,6 +72,50 @@ class Multicore extends FakedPromise {
 
   get done() {
     return (!this.running && this.actions.length === 0);
+  }
+
+  static data(data) {
+    return new Multicore(data);
+  }
+
+  static uInt8(arr) {
+    const mc = new Multicore(arr);
+    return mc.spawnParallel((data) => Uint8Array.from(data));
+  }
+
+  static uInt16(arr) {
+    const mc = new Multicore(arr);
+    return mc.spawnParallel((data) => Uint16Array.from(data));
+  }
+
+  static uInt32(arr) {
+    const mc = new Multicore(arr);
+    return mc.spawnParallel((data) => Uint32Array.from(data));
+  }
+
+  static int8(arr) {
+    const mc = new Multicore(arr);
+    return mc.spawnParallel((data) => Int8Array.from(data));
+  }
+
+  static int16(arr) {
+    const mc = new Multicore(arr);
+    return mc.spawnParallel((data) => Int16Array.from(data));
+  }
+
+  static int32(arr) {
+    const mc = new Multicore(arr);
+    return mc.spawnParallel((data) => Int32Array.from(data));
+  }
+
+  static float32(arr) {
+    const mc = new Multicore(arr);
+    return mc.spawnParallel((data) => Float32Array.from(data));
+  }
+
+  static float64(arr) {
+    const mc = new Multicore(arr);
+    return mc.spawnParallel((data) => Float64Array.from(data));
   }
 }
 

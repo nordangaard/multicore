@@ -49,7 +49,7 @@ class Thread extends EventManager {
     };
 
     worker.postMessage(operation.data, 
-      ('buffer' in operation.data) ? [operation.data.buffer] : undefined
+      (typeof operation.data === 'object' && 'buffer' in operation.data) ? [operation.data.buffer] : undefined
     );
   }
 
