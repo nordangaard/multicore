@@ -1,4 +1,3 @@
-import R from 'ramda';
 import Promise from 'bluebird';
 import { Operator } from './operator-kit';
 
