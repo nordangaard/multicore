@@ -9,6 +9,7 @@ Progress so far:
 - Faster for arithmetic operations than ParallelJS.
 Test: Operating on a list of 100k elements, multiplying and reducing them to one value. 
 Result: Multicore: ~200ms - ParallelJS ~20s
+- Now supposrts [TypedArrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays#Typed_array_views) (and any kind of [transferable](https://developers.google.com/web/updates/2011/12/Transferable-Objects-Lightning-Fast)) for futher increase speed and memory use.
 
 ## Installation
 
@@ -23,22 +24,49 @@ This assumes that you’re using [npm](http://npmjs.com/) package manager with a
 
 ## Documentation
 
-Import Multicore using either:
+### Usage
+
+##### TLDR;
+- Use **.data** or, if you know size/type of array, a [TypedArray]() function like **.uInt8**.
+- Then manipulate data by chaining [API-methods](): 
+-- ` Multicore.data([1,2,3]).reduce((acc,val) => acc+val); `
+- Retrieve the data from the instance promise: 
+-- `[...].reduce().map().then(result => { doSomething(result); })`
+
+#### Import Multicore
+Using either:
 
 ```
-const multicore = require('multicore').default;
+const Multicore = require('multicore').default;
 import Multicore from 'multicore';
 ```
 
-Create new instance for data you wish you manipulate:
+#### Create an instance
+Start an instance for data you wish you manipulate (can either be used as a constructor or with these static shorthand-methods):
+
+##### Constructor
+Create an instance with constructor and save it to a variable. The Constructor can also be subclassed as per ES6 classes.
+```
+const data = new Multicore([1,2,3]); // Constructor
 
 ```
-const data = new Multicore([1,2,3]);
+
+##### Static converter-functions
+Use the generic **.data** method to get the same behavior as with constructor.
+
+Use any of the [TypedArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays#Typed_array_views) functions to pass in an array and use parallelized conversion to convert it to a typed array internally, and thereby being able to use buffers internally. *Recommended for large arrays containing integers or floats, or anytime you know your array will only contain numbers.*
+
+TypedArray functions for the different types: **.int8, .int16, .int32, .uInt8, .uInt16, .uInt32, .float32, .float16**.
+
+```
+const data = Multicore.data([1,2,3]); // Use for generic data.
+const data = Multicore.uInt8([1,2,3); // Will convert array to typed-array and be able to utilize buffers internally
 ```
 
-Manipulate:
+#### Start manipulating
 
 ```
+// Manipulate saved instance
 data.map(val => val*2)
   .map(val => val*3)
   .reduce((acc, val) => {
@@ -49,6 +77,13 @@ data.map(val => val*2)
   });
 
 // The result is 37
+
+// Direct manipulation and conversion
+Multicore.uInt8([1,2,3])
+    .map(val => val*2)
+    .then(console.log); 
+
+// [2,4,6]
   
 ```
 
@@ -119,8 +154,6 @@ data.filter((val) => {
 Work that is currently underway and lives in feature-branches.
 
 - Adding full test-coverage.
-- Support for typed-arrays and transferables.
-- Support for threaded conversion to typed-arrays.
 - Switching to babel-implementation and building minified-js-files for CDN.
 - Adding support for new operators: .parallel and .merge.
 
