@@ -9,7 +9,7 @@ Progress so far:
 - Faster for arithmetic operations than ParallelJS.
 Test: Operating on a list of 100k elements, multiplying and reducing them to one value. 
 Result: Multicore: ~200ms - ParallelJS ~20s
-- Now supposrts [TypedArrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays#Typed_array_views) (and any kind of [transferable](https://developers.google.com/web/updates/2011/12/Transferable-Objects-Lightning-Fast)) for futher increase speed and memory use.
+- Now supports [TypedArrays](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Typed_arrays#Typed_array_views) (and any kind of [transferable](https://developers.google.com/web/updates/2011/12/Transferable-Objects-Lightning-Fast)) for futher increase in speed and memory use.
 
 ## Installation
 
@@ -28,10 +28,8 @@ This assumes that you’re using [npm](http://npmjs.com/) package manager with a
 
 ##### TLDR;
 - Use **.data** or, if you know size/type of array, a [TypedArray](#static-converter-functions) function like **.uInt8**.
-- Then manipulate data by chaining [API-methods](#methods): 
--- ` Multicore.data([1,2,3]).reduce((acc,val) => acc+val); `
-- Retrieve the data from the instance promise: 
--- `[...].reduce().map().then(result => { doSomething(result); })`
+- Then manipulate data by chaining [API-methods](#methods): ` Multicore.data([1,2,3]).reduce((acc,val) => acc+val); `
+- Retrieve the data from the instance promise: `[...].reduce().map().then(result => { doSomething(result); })`
 
 #### Import Multicore
 Using either:
@@ -48,7 +46,6 @@ Start an instance for data you wish you manipulate (can either be used as a cons
 Create an instance with constructor and save it to a variable. The Constructor can also be subclassed as per ES6 classes.
 ```
 const data = new Multicore([1,2,3]); // Constructor
-
 ```
 
 ##### Static converter-functions
