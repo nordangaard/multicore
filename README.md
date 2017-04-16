@@ -27,8 +27,8 @@ This assumes that you’re using [npm](http://npmjs.com/) package manager with a
 ### Usage
 
 ##### TLDR;
-- Use **.data** or, if you know size/type of array, a [TypedArray]() function like **.uInt8**.
-- Then manipulate data by chaining [API-methods](): 
+- Use **.data** or, if you know size/type of array, a [TypedArray](#static-converter-functions) function like **.uInt8**.
+- Then manipulate data by chaining [API-methods](#methods): 
 -- ` Multicore.data([1,2,3]).reduce((acc,val) => acc+val); `
 - Retrieve the data from the instance promise: 
 -- `[...].reduce().map().then(result => { doSomething(result); })`
