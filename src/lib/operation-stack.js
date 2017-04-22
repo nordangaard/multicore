@@ -1,8 +1,6 @@
-import { ThreadManager } from './threading';
-
 class OperationStack {
-  constructor() {
-    this.threadManager = new ThreadManager();
+  constructor(threadManager) {
+    this.threadManager = threadManager;
     this.stack = [];
 
     this.threadManager.onData((operation, data) => {

@@ -38,40 +38,24 @@ class Multicore extends FakedPromise {
 
   addAction(fn) {
     this.actions.push(fn);
-    return this.next();
+    return this.next(this.dataStore);
   }
 
-  next() {
-    if (this.done) {
-      return this.resolve(this.dataStore.data), this.resolved = true, this;
+  next(dataStore) {
+    if(this.actions.length === 0) {
+      this.running = false;
+      return this.resolve(dataStore.data), this.resolved = true, this;
     }
 
-    if (!this.running && this.actions.length > 0) {
-      this.makeJob(this.actions.shift());
-    }
-
-    return this;
-  }
-
-  makeJob(action) {
+    const currentAction = this.actions.shift();
     this.running = true;
 
-    action(this.dataStore)
-      .then((dataStore) => {
-        this.dataStore = dataStore;
-      })
-      .catch((error) => {
-        this.rejected = true;
-        this.reject(error);
-      })
-      .then(() => { this.running = false; })
-      .then(() => this.next());
-
+    currentAction(dataStore, this.next.bind(this), Function);
     return this;
   }
 
   get done() {
-    return (!this.running && this.actions.length === 0);
+    return (this.actions.length === 0 && !this.running);
   }
 
   static data(data) {

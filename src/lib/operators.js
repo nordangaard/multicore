@@ -1,7 +1,7 @@
 import Promise from 'bluebird';
 import { Operator } from './operator-kit';
 
-const reduce = Operator((dataStore, workerInterface, fn, [init] = []) => {
+const reduce = Operator((dataStore, workerInterface, next, error, fn, [init] = []) => {
   if (init) {
     dataStore.unshift(init);
   }
@@ -15,9 +15,10 @@ const reduce = Operator((dataStore, workerInterface, fn, [init] = []) => {
       .queue(store.next(), wrappedFunc)
     );
 
-  return Promise.all(promises)
+  Promise.all(promises)
     .then( arr => { return workerInterface.queue(arr, wrappedFunc); } )
-    .then( result => dataStore.piece(result) );
+    .then( result => dataStore.piece(result) )
+    .then( res => next(dataStore) );
 });
 
 // Remind: Fix this

@@ -1,12 +1,10 @@
-import Thread from './thread';
 import EventManager from '../helpers/event-manager';
 
 class ThreadManager extends EventManager {
-  constructor({ maxThreads = (window.navigator.hardwareConcurrency || 4) } = {}) {
+  constructor(threads) {
     super(null);
-    this.maxThreads = maxThreads;
     this.activeThreads = 0;
-    this.threads = Array.apply(null, { length: this.maxThreads }).map(() => new Thread());
+    this.threads = threads;
 
     // Register events
     this.threads.forEach(thread => {
@@ -35,7 +33,7 @@ class ThreadManager extends EventManager {
   }
 
   get hasFreeThreads() {
-    return (this.activeThreads !== this.maxThreads);
+    return (this.activeThreads !== this.threads.length);
   }
 }
 

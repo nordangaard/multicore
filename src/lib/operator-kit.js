@@ -1,11 +1,17 @@
 import R from 'ramda';
 import Promise from 'bluebird';
+import { Thread, ThreadManager } from './threading';
 import OperationStack from './operation-stack';
 import { compileSrc } from './helpers';
 
 const EnvNamespace = 'env';
 const __ = R.curry;
-const Stack = new OperationStack();
+
+// Switch this check for something in settings-class
+const maxThreads = (window.navigator.hardwareConcurrency || 4);
+const threads = Array.apply(null, { length: maxThreads }).map(() => new Thread());
+const Manager = new ThreadManager(threads);
+const Stack = new OperationStack(Manager);
 
 // makeJob : String Src -> Data -> Operation
 const makeOp = __((id, src, data) => ({ id, src, data }));
@@ -68,9 +74,9 @@ class WorkerInterface {
   }
 }
 
-const Operator = operatorFunc => __((fn, args, data) => {
+const Operator = operatorFunc => __((fn, args, dataStore, next, error) => {
   const workerInterface = new WorkerInterface(fn);
-  return operatorFunc(data, workerInterface, fn, args);
+  return operatorFunc(dataStore, workerInterface, next, error, fn, args);
 });
 
 export {
