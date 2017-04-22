@@ -31,6 +31,8 @@ This assumes that you’re using [npm](http://npmjs.com/) package manager with a
 - Then manipulate data by chaining [API-methods](#methods): ` Multicore.data([1,2,3]).reduce((acc,val) => acc+val); `
 - Retrieve the data from the instance promise: `[...].reduce().map().then(result => { doSomething(result); })`
 
+============================================================================
+
 #### Import Multicore
 Using either:
 
